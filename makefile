@@ -1,5 +1,16 @@
-emulator: main.o hardware.h
-	gcc -g -Wall -pedantic main.o -o emulator
+CFLAGS = -O3
+LDFLAGS =
+appname = cpu
 
-main.o: main.c hardware.h
-	gcc -c -Wall -pedantic main.c -o main.o
+all: $(appname)
+clean:
+	rm -f $(appname) *.o
+.PHONY: all clean
+
+sdl_cflags := $(shell pkg-config --cflags sdl2)
+sdl_libs := $(shell pkg-config --libs sdl2)
+override CFLAGS += $(sdl_cflags)
+override LIBS += $(sdl_libs)
+
+$(appname): cpu.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
